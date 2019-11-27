@@ -17,6 +17,7 @@ systemctl unmask hostapd
 systemctl disable hostapd
 systemctl disable dnsmasq
 
+if [ ! -f /etc/hostapd/hostapd.conf ]; then
 cat > /etc/hostapd/hostapd.conf <<EOF
 #2.4GHz setup wifi 80211 b,g,n
 interface=wlan0
@@ -43,8 +44,12 @@ country_code=GB
 ieee80211n=1
 ieee80211d=1
 EOF
+else
+	echo "/etc/hostapd/hostapd.conf already exists"
+fi
 
 vim /etc/hostapd/hostapd.conf
+
 sed /etc/default/hostapd -i -e "s|^#DAEMON_CONF=.*|DAEMON_CONF=\"/etc/hostapd/hostapd.conf\"|"
 sed /etc/default/hostapd -i -e "s|^DAEMON_OPTS=.*|#DAEMON_OPTS=\"\"|"
 
@@ -67,7 +72,7 @@ fi
 if grep -q "nohook wpa_supplicant" /etc/dhcpcd.conf; then
 	echo "dhcpcd.conf already configured"
 else
-cat <<EOF >> /etc/dnsmasq.conf
+cat <<EOF >> /etc/dhcpcd.conf
 nohook wpa_supplicant
 EOF
 fi
