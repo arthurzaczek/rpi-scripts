@@ -44,7 +44,7 @@ ieee80211n=1
 ieee80211d=1
 EOF
 
-vim etc/hostapd/hostapd.conf
+vim /etc/hostapd/hostapd.conf
 sed /etc/default/hostapd -i -e "s|^#DAEMON_CONF=.*|DAEMON_CONF=\"/etc/hostapd/hostapd.conf\"|"
 sed /etc/default/hostapd -i -e "s|^DAEMON_OPTS=.*|#DAEMON_OPTS=\"\"|"
 
