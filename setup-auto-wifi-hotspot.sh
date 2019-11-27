@@ -9,7 +9,7 @@ fi
 
 # Step 1
 apt-get update
-apt-get upgrade
+apt-get -y upgrade
 
 apt-get install -y hostapd dnsmasq
 
