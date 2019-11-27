@@ -266,3 +266,10 @@ EOF
 
 chmod +x /usr/bin/autohotspot
 
+if grep -q "/usr/bin/autohotspot" /etc/crontab; then
+	echo "crontab already configured"
+else
+cat <<EOF >> /etc/crontab
+*/5 * * * * sudo /usr/bin/autohotspot >/dev/null 2>&1
+EOF
+fi
