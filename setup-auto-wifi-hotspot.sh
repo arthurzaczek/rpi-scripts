@@ -93,12 +93,12 @@ EOF
 systemctl enable autohotspot.service
 
 
-cat > /usr/bin/autohotspot <<EOF
+cat > /usr/bin/autohotspot <<'EOF'
 #!/bin/bash
 #version 0.95-41-N/HS
 
-#You may share this script on the condition a reference to RaspberryConnect.com
-#must be included in copies or derivatives of this script.
+#You may share this script on the condition a reference to RaspberryConnect.com 
+#must be included in copies or derivatives of this script. 
 
 #A script to switch between a wifi network and a non internet routed Hotspot
 #Works at startup or with a seperate timer or manually without a reboot
@@ -106,12 +106,13 @@ cat > /usr/bin/autohotspot <<EOF
 #http://www.raspberryconnect.com
 
 wifidev="wlan0" #device name to use. Default is wlan0.
-#use the command: iw dev ,to see wifi interface name
+#use the command: iw dev ,to see wifi interface name 
 
 IFSdef=$IFS
 cnt=0
 #These four lines capture the wifi networks the RPi is setup to use
-wpassid=$(awk '/ssid="/{ print $0 }' /etc/wpa_supplicant/wpa_supplicant.conf | awk -F'ssid=' '{ print $2 }' ORS=',' | sed 's/\"/''/g' | sed 's/,$//')
+#wpassid=$(awk '/ssid="/{ print $0 }' /etc/wpa_supplicant/wpa_supplicant.conf | awk -F'ssid=' '{ print $2 }' ORS=',' | sed 's/\"/''/g' | sed 's/,$//')
+wpassid=$(awk '/ssid="/{ print $0 }' /etc/wpa_supplicant/wpa_supplicant.conf | awk -F'ssid=' '{ print $2 }' | sed 's/\"/''/g' | sed 's/,$//' | sed 's/\r//' )
 IFS=","
 ssids=($wpassid)
 IFS=$IFSdef #reset back to defaults
@@ -122,11 +123,13 @@ IFS=$IFSdef #reset back to defaults
 # separated by a space, eg ('mySSID1' 'mySSID2')
 #ssids=('mySSID1' 'mySSID2' 'mySSID3')
 
-#Enter the Routers Mac Addresses for hidden SSIDs, seperated by spaces ie
-#( '11:22:33:44:55:66' 'aa:bb:cc:dd:ee:ff' )
+#Enter the Routers Mac Addresses for hidden SSIDs, seperated by spaces ie 
+#( '11:22:33:44:55:66' 'aa:bb:cc:dd:ee:ff' ) 
 mac=()
 
 ssidsmac=("${ssids[@]}" "${mac[@]}") #combines ssid and MAC for checking
+
+echo "using ssids and macs: $ssidsmac"
 
 createAdHocNetwork()
 {
@@ -170,7 +173,7 @@ ssidChk=('NoSSid')
 i=0; j=0
 until [ $i -eq 1 ] #wait for wifi if busy, usb wifi is slower.
 do
-        ssidreply=$((iw dev "$wifidev" scan ap-force | egrep "^BSS|SSID:") 2>&1) >/dev/null 2>&1
+        ssidreply=$((iw dev "$wifidev" scan ap-force | egrep "^BSS|SSID:") 2>&1) >/dev/null 2>&1 
         echo "SSid's in range: " $ssidreply
         echo "Device Available Check try " $j
         if (($j >= 10)); then #if busy 10 times goto hotspot
@@ -200,6 +203,7 @@ done
 
 for ssid in "${ssidsmac[@]}"
 do
+     echo "checking ssid $ssid"
      if (echo "$ssidreply" | grep "$ssid") >/dev/null 2>&1
      then
 	      #Valid SSid found, passing to script
@@ -226,7 +230,7 @@ NoDevice()
 FindSSID
 
 #Create Hotspot or connect to valid wifi networks
-if [ "$ssidChk" != "NoSSid" ]
+if [ "$ssidChk" != "NoSSid" ] 
 then
        if systemctl status hostapd | grep "(running)" >/dev/null 2>&1
        then #hotspot running and ssid in range
