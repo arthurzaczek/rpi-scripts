@@ -33,7 +33,7 @@ BACKUP_COUNT="5"
 BACKUP_NAME="????-Backup"
 # ------------------
 
-dd if=/dev/mmcblk0 of=${BACKUP_PATH}/${BACKUP_NAME}-$(date +%Y%m%d-%H%M%S).img bs=1MB
+dd if=/dev/mmcblk0 of=${BACKUP_PATH}/${BACKUP_NAME}-$(date +%Y%m%d-%H%M%S).img bs=1MB status=progress
 pushd ${BACKUP_PATH}; ls -tr ${BACKUP_PATH}/${BACKUP_NAME}* | head -n -${BACKUP_COUNT} | xargs rm; popd
 
 EOF
